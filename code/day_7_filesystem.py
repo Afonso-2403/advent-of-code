@@ -1,6 +1,5 @@
 INPUT_FILE = "../input_files/day_7_input.txt"
 
-# Check how to define a class in python
 class DirectoryObject():
   def __init__(self, size = 0, parent=None):
     self.size = size
