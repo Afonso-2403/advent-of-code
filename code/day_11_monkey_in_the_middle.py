@@ -86,6 +86,7 @@ def exercise_1():
 def exercise_2():
 
   list_monkeys = []
+  worry_level_reduction_magic_number = 1
 
   with open(INPUT_FILE) as input_file:
     for line in input_file:
@@ -121,6 +122,7 @@ def exercise_2():
 
       if parsed_line[0] == "Test:":
         list_monkeys[-1].divisible_by = int(parsed_line[3])
+        worry_level_reduction_magic_number *= list_monkeys[-1].divisible_by
         list_monkeys[-1].throw_to_monkey_case_true = int(next(input_file).rstrip().split()[5])
         list_monkeys[-1].throw_to_monkey_case_false = int(next(input_file).rstrip().split()[5])
 
@@ -130,12 +132,10 @@ def exercise_2():
         list_monkeys[-1].throw_to_condition = types.MethodType(throw_to_condition, list_monkeys[-1])
 
   for round in range(10000):
-    if round % 100 == 0:
-      print(f"round number {round}")
-
     for monkey in list_monkeys:
       while not monkey.queue.empty():
         item_worry_level = monkey.queue.get()
+        item_worry_level %= worry_level_reduction_magic_number
         monkey.number_inspected_items += 1
         item_worry_level = monkey.operation(item_worry_level)
         monkey_to_throw_to = monkey.throw_to_condition(item_worry_level)
