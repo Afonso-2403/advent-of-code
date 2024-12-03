@@ -1,6 +1,7 @@
 # Contents
 
-This repo contains my solutions to the advent of code problems of multiple years, implemented in python
+This repo contains my solutions to the advent of code problems of multiple years, implemented in python.
+For some of the problems, a smaller input file for testing is included.  
 
 # Running the code
 
