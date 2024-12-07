@@ -1,5 +1,4 @@
 from pathlib import Path
-import re
 
 INPUT_FILE_PATH = f"{Path(__file__).parent}/../input_files/day_6_input.txt"
 
@@ -16,7 +15,6 @@ def part_1():
         matrix = f.read().splitlines()
 
     current_position, current_direction, current_direction_index = find_current_position_and_direction(matrix)
-    print(current_position, current_direction, current_direction_index)
 
     covered_positions = [[0 for _ in range(len(matrix[0]))] for _ in range(len(matrix))]
 
@@ -27,9 +25,11 @@ def part_1():
         if not (0 <= current_position[0] < len(matrix) and 0 <= current_position[1] < len(matrix[0])):
             break
 
-    print(sum([sum(row) for row in covered_positions]))
+    print(f"part_1 answer: {sum([sum(row) for row in covered_positions])}")
+    return covered_positions
 
-def part_2():    
+def part_2():
+    covered_positions_part_1 = part_1()
     with open(INPUT_FILE_PATH, 'r') as f:
         matrix = f.read().splitlines()
 
@@ -38,6 +38,9 @@ def part_2():
     found_loops = 0
     for row, line in enumerate(matrix):
         for column, character in enumerate(line):
+            if covered_positions_part_1[row][column] == 0:
+                continue
+
             covered_positions = [[0 for _ in range(len(matrix[0]))] for _ in range(len(matrix))]
 
             current_position = starting_position
@@ -51,24 +54,30 @@ def part_2():
             temp_list[column] = '#'
             matrix[row] = "".join(temp_list)
 
-            number_of_calls = 0
+            portential_loop = False
             while True:
+                if covered_positions[current_position[0]][current_position[1]] > 2:
+                    portential_loop = True
+
                 covered_positions[current_position[0]][current_position[1]] += 1
                 current_position, current_direction, current_direction_index = move_or_rotate(current_position, current_direction, current_direction_index, matrix)
                 
                 if not (0 <= current_position[0] < len(matrix) and 0 <= current_position[1] < len(matrix[0])):
                     break
 
-                if covered_positions[current_position[0]][current_position[1]] > 10000:
+                # Assume it is a loop if the nodes in this order have been visited more than 2 times
+                if covered_positions[current_position[0]][current_position[1]] > 2 and portential_loop:
                     found_loops += 1
-                    print(f"Found loop for obstacle in ({row}, {column})")
                     break
+                
+                else:
+                    portential_loop = False
 
             temp_list = list(matrix[row])
             temp_list[column] = '.'
             matrix[row] = "".join(temp_list)
 
-    print(found_loops)
+    print(f"part_2 answer: {found_loops}")
 
 def find_current_position_and_direction(matrix) -> tuple[tuple[int, int], tuple[int, int], int]:
     for row, line in enumerate(matrix):
