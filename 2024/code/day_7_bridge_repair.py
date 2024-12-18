@@ -5,39 +5,22 @@ from operator import mul, add
 INPUT_FILE_PATH = f"{Path(__file__).parent}/../input_files/day_7_input.txt"
 
 def part_1():
-
-    test_value_to_operands_dict = {}
+    test_values = []
+    operands = []
 
     with open(INPUT_FILE_PATH, 'r') as f:
         for line in f:
             splitted_line = line.split(":")
-            test_value_to_operands_dict[int(splitted_line[0])] = [int(x) for x in splitted_line[1].strip().split(" ")]
-
-    # print(test_value_to_operands_dict)
+            test_values.append(int(splitted_line[0])) 
+            operands.append([int(x) for x in splitted_line[1].strip().split(" ")])
 
     total_calibration_result = 0
-    found_keys = set()
-    for key, value in test_value_to_operands_dict.items():
-        if search_all_possible_combinations(key, value):
-            # print(f"Found value {key} with operands {value}")
-            total_calibration_result += key
-            found_keys.add(key)
+    for test_value, operands in zip(test_values, operands):
+        if search_all_possible_combinations(test_value, operands):
+            total_calibration_result += test_value
     print(f"Total calibration result: {total_calibration_result}")
 
-    total_calibration_result_eivind = 0
-    found_keys_eivind = set()
-    for key, value in test_value_to_operands_dict.items():
-        if key in eivind_solution(value, key):
-            # print(f"Found value {key} with operands {value}")
-            total_calibration_result_eivind += key
-            found_keys_eivind.add(key)
-
-    print(f"Total calibration result_eivind: {total_calibration_result_eivind}")
-
-    for key in found_keys.symmetric_difference(found_keys_eivind):
-        print(f"Key {key} not found")
-
-def search_all_possible_combinations(test_value, operands):
+def search_all_possible_combinations(test_value, operands, part_2=False):
     if len(operands) == 1:
         return test_value == operands[0]
     
@@ -62,10 +45,23 @@ def eivind_solution(nums, test):
     n = nums[-1]
     r = eivind_solution(rest, test)
     r = {c for c in r if c <= test}
-    return {n * c for c in r}.union({n + c for c in r})
+    return {n * c for c in r}.union({n + c for c in r}).union({int(str(c) + str(n)) for c in r})
 
 def part_2():
-    pass
+    test_values = []
+    operands = []
+
+    with open(INPUT_FILE_PATH, 'r') as f:
+        for line in f:
+            splitted_line = line.split(":")
+            test_values.append(int(splitted_line[0])) 
+            operands.append([int(x) for x in splitted_line[1].strip().split(" ")])
+
+    total_calibration_result = 0
+    for test_value, operands in zip(test_values, operands):
+        if test_value in eivind_solution(operands, test_value):
+            total_calibration_result += test_value
+    print(f"Total calibration result: {total_calibration_result}")
 
 if __name__ == "__main__":
-    part_1()
+    part_2()
