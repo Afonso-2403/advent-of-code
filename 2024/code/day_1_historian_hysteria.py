@@ -6,7 +6,7 @@ def part_1():
     left_list = []
     right_list = []
 
-    with open("day_1_input.txt") as f:
+    with open(INPUT_FILE_PATH) as f:
         for line in f:
             splitted_line = line.split()
             left_list.append(int(splitted_line[0]))
