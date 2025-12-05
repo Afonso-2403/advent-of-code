@@ -48,6 +48,24 @@ def part_2():
 
             joltage_counter += int(current_battery)
 
+        #     # Alternative approach by Github Copilot:
+        #     # Build the lexicographically largest subsequence of length BATTERY_SIZE
+        #     # using a greedy stack algorithm.
+        #     s = battery_bank
+        #     n = len(s)
+        #     k = BATTERY_SIZE
+        #     to_remove = n - k
+        #     stack: list[str] = []
+        #     for ch in s:
+        #         while stack and to_remove > 0 and stack[-1] < ch:
+        #             stack.pop()
+        #             to_remove -= 1
+        #         stack.append(ch)
+
+        #     # The result is the first k elements of the stack
+        #     result = ''.join(stack[:k])
+        #     joltage_counter += int(result)
+
     print(joltage_counter)
 
 
