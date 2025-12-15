@@ -97,6 +97,49 @@ def part_1():
     
     print(result)
     
+def part_2():
+    distance_to_pairs_dict: dict[int, list[tuple[int, int]]] = dict()
+    boxes_list: list[tuple[int, int, int]] = []
 
+    # Read all boxes and compute pairwise distances
+    with open(INPUT_FILE_PATH) as f:
+        for line in f:
+            current_box = line.strip().split(',')
+            current_box_tuple = (int(current_box[0]), int(current_box[1]), int(current_box[2]))
+            
+            for idx, box in enumerate(boxes_list):
+                distance_squared = (
+                    pow(current_box_tuple[0] - box[0], 2) +
+                    pow(current_box_tuple[1] - box[1], 2) +
+                    pow(current_box_tuple[2] - box[2], 2)
+                )
+                if distance_squared in distance_to_pairs_dict:
+                    distance_to_pairs_dict[distance_squared].append((idx, len(boxes_list)))
+                else:
+                    distance_to_pairs_dict[distance_squared] = [(idx, len(boxes_list))]
+            
+            boxes_list.append(current_box_tuple)
+
+    # Sort distances in ascending order
+    distance_to_pairs_dict = dict(sorted(distance_to_pairs_dict.items()))
+    
+    # Initialize Union-Find with one set per junction box
+    uf = UnionFind(len(boxes_list))
+    
+    handled_pairs = 0
+    last_indexes = (-1,-1)
+
+    for _, list_of_pairs in distance_to_pairs_dict.items():
+        for idx1, idx2 in list_of_pairs:
+            were_joined = uf.union(idx1, idx2)
+            handled_pairs += 1
+
+            if were_joined:
+                if sorted(uf.get_circuit_sizes(), reverse=True)[0] == len(boxes_list):
+                    last_indexes = idx1, idx2
+                    break
+
+    print(boxes_list[last_indexes[0]][0] * boxes_list[last_indexes[1]][0])
+    
 if __name__ == "__main__":
-    part_1()
+    part_2()
